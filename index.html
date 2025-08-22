@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StayEase Chatbot</title>
+    <title>StayEase Chatbot Widget</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,15 +11,57 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #073B4C;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            background: transparent;
+            overflow: hidden;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
         }
-        #chat-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 90%;
+            max-width: 380px;
+            height: 500px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transform: scale(0.1);
+            opacity: 0;
+            pointer-events: none;
+            transform-origin: bottom right;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            z-index: 1000;
+        }
+        .chatbot-container.active {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .chat-toggle-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #118AB2;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
         }
         .chat-message {
             max-width: 80%;
@@ -45,11 +87,11 @@
         }
     </style>
 </head>
-<body class="bg-[#073B4C] text-gray-800 flex items-center justify-center min-h-screen p-4">
+<body>
 
-    <canvas id="chat-canvas"></canvas>
+    <div id="chat-toggle-button" class="chat-toggle-button">💬</div>
 
-    <div class="relative w-full max-w-2xl bg-white rounded-lg shadow-xl z-10 flex flex-col h-[80vh] md:h-[70vh]">
+    <div id="chatbot-container" class="chatbot-container">
         <div class="p-4 bg-[#118AB2] text-white rounded-t-lg shadow-md flex justify-between items-center">
             <div class="flex items-center">
                 <div class="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></div>
@@ -74,57 +116,15 @@
 
     <script>
         window.onload = function() {
-            const canvas = document.getElementById('chat-canvas');
-            const ctx = canvas.getContext('2d');
-            let particles = [];
-
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-
-            function createParticles() {
-                particles = [];
-                for (let i = 0; i < 100; i++) {
-                    particles.push({
-                        x: Math.random() * canvas.width,
-                        y: Math.random() * canvas.height,
-                        radius: Math.random() * 2 + 1,
-                        vx: (Math.random() - 0.5) * 0.5,
-                        vy: (Math.random() - 0.5) * 0.5,
-                        color: `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.2})`
-                    });
-                }
-            }
-            createParticles();
-
-            function animateCanvas() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#073B4C';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                for (let i = 0; i < particles.length; i++) {
-                    const p = particles[i];
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = p.color;
-                    ctx.fill();
-
-                    p.x += p.vx;
-                    p.y += p.vy;
-
-                    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-                }
-                requestAnimationFrame(animateCanvas);
-            }
-            animateCanvas();
-
+            const chatbotContainer = document.getElementById('chatbot-container');
+            const toggleButton = document.getElementById('chat-toggle-button');
             const chatMessages = document.getElementById('chat-messages');
             const userInput = document.getElementById('user-input');
             const sendButton = document.getElementById('send-button');
+
+            toggleButton.addEventListener('click', () => {
+                chatbotContainer.classList.toggle('active');
+            });
 
             const addMessage = (message, sender) => {
                 const messageDiv = document.createElement('div');
@@ -145,7 +145,7 @@
                 "timeline": "Our project follows a 16-week hybrid Agile-Waterfall roadmap, with distinct phases for planning, core development, and AI/AR sprints.",
                 "tech stack": "Our tech stack includes Next.js, Node.js, TensorFlow for AI, and WebXR for AR. We use PostgreSQL and MongoDB for our databases.",
                 "technologies": "Our tech stack includes Next.js, Node.js, TensorFlow for AI, and WebXR for AR. We use PostgreSQL and MongoDB for our databases.",
-                "how does it work": "StayEase operates on a layered microservices architecture, with dedicated services for AI, AR, user management, and the community wiki.",
+                "how it works": "StayEase operates on a layered microservices architecture, with dedicated services for AI, AR, user management, and the community wiki.",
                 "benefits": "StayEase promotes authentic, culture-driven tourism, helps travelers find aligned hosts and environments, and increases booking efficiency with AR previews.",
                 "goals": "Our primary objective is to redefine the vacation rental experience by seamlessly integrating AI personalization, community-driven content, and immersive AR technology."
             };
@@ -155,19 +155,16 @@
             const getAiResponse = (message) => {
                 const lowerCaseMessage = message.toLowerCase();
 
-                // Check for greetings first
                 if (greetings.some(greeting => lowerCaseMessage.includes(greeting))) {
                     return "Hi there! What would you like to know about StayEase?";
                 }
 
-                // Check for keywords in the knowledge base
                 for (const keyword in knowledgeBase) {
                     if (lowerCaseMessage.includes(keyword)) {
                         return knowledgeBase[keyword];
                     }
                 }
 
-                // Default response if no keyword is found
                 return "That's a great question! StayEase is designed to make travel planning more authentic and immersive. What specifically are you curious about?";
             };
 
@@ -192,6 +189,5 @@
             });
         };
     </script>
-
 </body>
 </html>
