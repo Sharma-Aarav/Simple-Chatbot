@@ -134,29 +134,41 @@
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             };
 
+            const knowledgeBase = {
+                "features": "StayEase has three main pillars: an AI-powered personalization engine, a community-driven wiki, and zero-download AR previews.",
+                "ai": "Our AI engine uses NLP to analyze your 'Travel DNA' and matches you with compatible hosts and stays, ensuring a perfect fit.",
+                "ar": "Our WebXR technology lets you take a virtual 3D walkthrough of a neighborhood, so you can explore before you book. No app download needed!",
+                "augmented reality": "Our WebXR technology lets you take a virtual 3D walkthrough of a neighborhood, so you can explore before you book. No app download needed!",
+                "wiki": "The community wiki is a crowd-sourced guide for local tips and hidden gems. It's verified using BERT-based sentiment analysis for credibility.",
+                "community": "The community wiki is a crowd-sourced guide for local tips and hidden gems. It's verified using BERT-based sentiment analysis for credibility.",
+                "problem": "Traditional platforms offer generic listings and fragmented knowledge. StayEase solves this by providing personalization and integrated insights.",
+                "timeline": "Our project follows a 16-week hybrid Agile-Waterfall roadmap, with distinct phases for planning, core development, and AI/AR sprints.",
+                "tech stack": "Our tech stack includes Next.js, Node.js, TensorFlow for AI, and WebXR for AR. We use PostgreSQL and MongoDB for our databases.",
+                "technologies": "Our tech stack includes Next.js, Node.js, TensorFlow for AI, and WebXR for AR. We use PostgreSQL and MongoDB for our databases.",
+                "how does it work": "StayEase operates on a layered microservices architecture, with dedicated services for AI, AR, user management, and the community wiki.",
+                "benefits": "StayEase promotes authentic, culture-driven tourism, helps travelers find aligned hosts and environments, and increases booking efficiency with AR previews.",
+                "goals": "Our primary objective is to redefine the vacation rental experience by seamlessly integrating AI personalization, community-driven content, and immersive AR technology."
+            };
+
+            const greetings = ["hi", "hello", "hey", "hie", "yo"];
+
             const getAiResponse = (message) => {
                 const lowerCaseMessage = message.toLowerCase();
-                let response = "";
-                if (lowerCaseMessage.includes("features")) {
-                    response = "StayEase has three main pillars: an AI-powered personalization engine, a community-driven wiki, and zero-download AR previews.";
-                } else if (lowerCaseMessage.includes("ai")) {
-                    response = "Our AI engine uses NLP to analyze your 'Travel DNA' and matches you with compatible hosts and stays, ensuring a perfect fit.";
-                } else if (lowerCaseMessage.includes("ar") || lowerCaseMessage.includes("augmented reality")) {
-                    response = "Our WebXR technology lets you take a virtual 3D walkthrough of a neighborhood, so you can explore before you book. No app download needed!";
-                } else if (lowerCaseMessage.includes("wiki") || lowerCaseMessage.includes("community")) {
-                    response = "The community wiki is a crowd-sourced guide for local tips and hidden gems. It's verified using BERT-based sentiment analysis for credibility.";
-                } else if (lowerCaseMessage.includes("problem")) {
-                    response = "Traditional platforms offer generic listings and fragmented knowledge. StayEase solves this by providing personalization and integrated insights.";
-                } else if (lowerCaseMessage.includes("timeline")) {
-                    response = "Our project follows a 16-week hybrid Agile-Waterfall roadmap, with distinct phases for planning, core development, and AI/AR sprints.";
-                } else if (lowerCaseMessage.includes("tech stack") || lowerCaseMessage.includes("technologies")) {
-                    response = "Our tech stack includes Next.js, Node.js, TensorFlow for AI, and WebXR for AR. We use PostgreSQL and MongoDB for our databases.";
-                } else if (lowerCaseMessage.includes("hi") || lowerCaseMessage.includes("hello")) {
-                    response = "Hi there! What would you like to know about StayEase?";
-                } else {
-                    response = "That's a great question! StayEase is designed to make travel planning more authentic and immersive. What specifically are you curious about?";
+
+                // Check for greetings first
+                if (greetings.some(greeting => lowerCaseMessage.includes(greeting))) {
+                    return "Hi there! What would you like to know about StayEase?";
                 }
-                return response;
+
+                // Check for keywords in the knowledge base
+                for (const keyword in knowledgeBase) {
+                    if (lowerCaseMessage.includes(keyword)) {
+                        return knowledgeBase[keyword];
+                    }
+                }
+
+                // Default response if no keyword is found
+                return "That's a great question! StayEase is designed to make travel planning more authentic and immersive. What specifically are you curious about?";
             };
 
             const sendMessage = () => {
